@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: 
+      - .env 
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl/test.crt.pem:/etc/ssl/certs/test.crt.pem
+      - ./ssl/test.key.pem:/etc/ssl/private/test.key.pem
+    ports:
+      - "443:443"
+    depends_on:
+      - web
